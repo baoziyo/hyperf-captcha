@@ -17,27 +17,6 @@ class Captcha
 {
     protected $config;
 
-    protected $defaultConfig = [
-        'charset' => '123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz',
-        'length' => 4,
-        'confusionCurve' => false,
-        'randomNoise' => false,
-        'useFont' => null,
-        'fontSize' => 25,
-        'fontColor' => null,
-        'backgroundColor' => [255, 255, 255],
-        'captchaWidth' => null,
-        'captchaHeight' => null,
-        'fonts' => [
-            __DIR__ . '/assets/ttf/1.ttf',
-            __DIR__ . '/assets/ttf/2.ttf',
-            __DIR__ . '/assets/ttf/3.ttf',
-            __DIR__ . '/assets/ttf/4.ttf',
-            __DIR__ . '/assets/ttf/5.ttf',
-            __DIR__ . '/assets/ttf/6.ttf',
-        ],
-    ];
-
     public function __construct($name = 'default')
     {
         $container = \Hyperf\Utils\ApplicationContext::getContainer();
@@ -47,7 +26,26 @@ class Captcha
             throw new \InvalidArgumentException(sprintf('config[%s] is not exist!', $configKey));
         }
 
-        $this->config = $this->defaultConfig + $config->get($configKey, []);
+        $this->config['charset'] = $config->get($configKey . '.charset', '123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvWwXxYyZz');
+        $this->config['length'] = $config->get($configKey . '.length', 4);
+        $this->config['confusionCurve'] = $config->get($configKey . '.confusionCurve', false);
+        $this->config['randomNoise'] = $config->get($configKey . '.randomNoise', false);
+        $this->config['useFont'] = $config->get($configKey . '.useFont');
+        $this->config['fontSize'] = $config->get($configKey . '.fontSize', 25);
+        $this->config['fontColor'] = $config->get($configKey . '.fontColor');
+        $this->config['backgroundColor'] = $config->get($configKey . '.backgroundColor', [255, 255, 255]);
+        $this->config['captchaWidth'] = $config->get($configKey . '.captchaWidth');
+        $this->config['captchaHeight'] = $config->get($configKey . '.captchaHeight');
+        $this->config['fonts'] = [
+            __DIR__ . '/assets/ttf/1.ttf',
+            __DIR__ . '/assets/ttf/2.ttf',
+            __DIR__ . '/assets/ttf/3.ttf',
+            __DIR__ . '/assets/ttf/4.ttf',
+            __DIR__ . '/assets/ttf/5.ttf',
+            __DIR__ . '/assets/ttf/6.ttf',
+            ...$config->get($configKey . '.fonts', []),
+        ];
+        
         $this->buildDefaultConfig();
         $this->config['useFont'] || $this->config['useFont'] = $this->config['fonts'][array_rand($this->config['fonts'])];
     }

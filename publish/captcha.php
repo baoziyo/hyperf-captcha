@@ -19,7 +19,7 @@ return [
         // 字体颜色
         'fontColor' => null,
         // 背景颜色
-        'backgroundColor' => null,
+        'backgroundColor' => [255, 255, 255],
         // 图片宽度
         'captchaWidth' => null,
         // 图片高度
