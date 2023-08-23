@@ -45,12 +45,12 @@ class Captcha
             __DIR__ . '/assets/ttf/6.ttf',
             ...$config->get($configKey . '.fonts', []),
         ];
-        
+
         $this->buildDefaultConfig();
         $this->config['useFont'] || $this->config['useFont'] = $this->config['fonts'][array_rand($this->config['fonts'])];
     }
 
-    public function buildDefaultConfig()
+    public function buildDefaultConfig(): void
     {
         $length = $this->config['length'];
         $fontSize = $this->config['fontSize'];
@@ -63,7 +63,7 @@ class Captcha
 
     public function generateCode($code = null)
     {
-        if (! is_null($code)) {
+        if ($code !== null) {
             $length = strlen($code);
             $fontSize = $this->config['fontSize'];
             $this->config['length'] = $length;
@@ -127,27 +127,28 @@ class Captcha
 
         $py = 0;
         // 曲线前部分
-        $A = random_int(1, $this->config['captchaHeight'] / 2); // 振幅
-        $b = random_int(-$this->config['captchaHeight'] / 4, $this->config['captchaHeight'] / 4); // Y轴方向偏移量
-        $f = random_int(-$this->config['captchaHeight'] / 4, $this->config['captchaHeight'] / 4); // X轴方向偏移量
-        $T = random_int($this->config['captchaHeight'], $this->config['captchaWidth'] * 2); // 周期
+        $A = random_int(1, (int)$this->config['captchaHeight'] / 2); // 振幅
+        $b = random_int((int)(-$this->config['captchaHeight'] / 4), (int)($this->config['captchaHeight'] / 4)); // Y轴方向偏移量
+        $f = random_int((int)(-$this->config['captchaHeight'] / 4), (int)($this->config['captchaHeight'] / 4)); // X轴方向偏移量
+        $T = random_int((int)($this->config['captchaHeight']), (int)($this->config['captchaWidth'] * 2)); // 周期
         $w = (2 * M_PI) / $T;
         $px1 = 0; // 曲线横坐标起始位置
-        $px2 = random_int($this->config['captchaWidth'] / 2, $this->config['captchaWidth'] * 0.8); // 曲线横坐标结束位置
+        $px2 = random_int((int)($this->config['captchaWidth'] / 2), (int)($this->config['captchaWidth'] * 0.8)); // 曲线横坐标结束位置
+        $fontColor = imagecolorallocate($image,...$this->config['fontColor']);
         for ($px = $px1; $px <= $px2; $px = $px + 1) {
             if ($w !== 0) {
                 $py = $A * sin($w * $px + $f) + $b + $this->config['captchaHeight'] / 2; // y = Asin(ωx+φ) + b
                 $i = (int) ($this->config['fontSize'] / 5);
                 while ($i > 0) {
-                    imagesetpixel($image, $px + $i, $py + $i, $this->config['fontColor']);
+                    imagesetpixel($image, (int)($px + $i), (int)($py + $i), $fontColor);
                     --$i;
                 }
             }
         }
         // 曲线后部分
-        $A = random_int(1, $this->config['captchaHeight'] / 2); // 振幅
-        $f = random_int(-$this->config['captchaHeight'] / 4, $this->config['captchaHeight'] / 4); // X轴方向偏移量
-        $T = random_int($this->config['captchaHeight'], $this->config['captchaWidth'] * 2); // 周期
+        $A = random_int(1, (int)($this->config['captchaHeight'] / 2)); // 振幅
+        $f = random_int((int)(-$this->config['captchaHeight'] / 4), (int)($this->config['captchaHeight'] / 4)); // X轴方向偏移量
+        $T = random_int((int)($this->config['captchaHeight']), (int)($this->config['captchaWidth'] * 2)); // 周期
         $w = (2 * M_PI) / $T;
         $b = $py - $A * sin($w * $px + $f) - $this->config['captchaHeight'] / 2;
         $px1 = $px2;
@@ -157,7 +158,7 @@ class Captcha
                 $py = $A * sin($w * $px + $f) + $b + $this->config['captchaHeight'] / 2; // y = Asin(ωx+φ) + b
                 $i = (int) ($this->config['fontSize'] / 5);
                 while ($i > 0) {
-                    imagesetpixel($image, $px + $i, $py + $i, $this->config['fontColor']);
+                    imagesetpixel($image, (int)($px + $i), (int)($py + $i), $fontColor);
                     --$i;
                 }
             }
